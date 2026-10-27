@@ -161,3 +161,45 @@ mvn dependency:tree
 Supported Java versions: 8, 11, 17, 21, 23.
 
 </details>
+
+---
+
+<details>
+<summary><b>ett</b> — Terminal time in the prompt</summary>
+
+Prefixes the prompt with the time it appeared and how long the last command took:
+
+```
+[10/27 14:30:51] amir@ilf:~$ grep "find" .
+[10/27 14:32:36] 12 amir@ilf:~$
+```
+
+- the stamp is when the prompt appeared, so the gap to the previous stamp minus the duration shows how long the terminal sat idle
+- date, clock and duration can each be turned off, and the duration has three formats
+- no duration means no command ran before this prompt (new terminal, empty Enter, Ctrl+C)
+
+Only bash builtins per prompt (`EPOCHREALTIME`, `printf -v`), no forks, no files.
+
+**Dependencies**
+
+None. bash 5+.
+
+**Sourced, not executed** — handled automatically by `install.sh`.
+
+**Usage**
+
+```bash
+ett                      # show help
+ett on | off
+ett date  on | off       # 10/27
+ett clock on | off       # 14:32:36
+ett dur   short          # 12, 1:12, 1:21:23  (default)
+ett dur   s              # 12s, 1m12s, 1h21m23s
+ett dur   full           # 00:00:12
+ett dur   off            # hide the duration
+ett status               # show current settings
+```
+
+Settings are saved in `~/.ubtools/ett/.config` and used by new terminals too.
+
+</details>

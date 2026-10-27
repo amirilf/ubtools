@@ -30,6 +30,7 @@ if [[ "${1:-}" == "--help" ]]; then
     bumper  Maven version bumper
     proxy   GNOME proxy switcher  (command: px)
     mvn     Smart Maven wrapper
+    ett     Terminal time in the prompt
 
 EOF
     exit 0
@@ -48,6 +49,7 @@ declare -A TOOL_DESC=(
     [bumper]="Maven version bumper — branch picker, semver bump, git commit"
     [proxy]="GNOME proxy switcher — fzf profiles, add/drop/edit"
     [mvn]="Smart Maven wrapper — Java auto-switch, wrapper generator, tab completion"
+    [ett]="Terminal time — prompt stamp + last command duration, toggle with ett"
 )
 
 declare -A TOOL_CMDS=(
@@ -55,6 +57,7 @@ declare -A TOOL_CMDS=(
     [bumper]="fzf git"
     [proxy]="fzf gsettings"
     [mvn]="curl"
+    [ett]=""
 )
 
 declare -A TOOL_APT=(
@@ -62,6 +65,7 @@ declare -A TOOL_APT=(
     [bumper]="fzf"
     [proxy]="fzf"
     [mvn]="curl java-common"
+    [ett]=""
 )
 
 declare -A TOOL_SCRIPT=(
@@ -69,6 +73,7 @@ declare -A TOOL_SCRIPT=(
     [bumper]="bumper/bumper.sh"
     [proxy]="proxy/px.sh"
     [mvn]="mvn/mvn.sh"
+    [ett]="ett/ett.sh"
 )
 
 declare -A TOOL_BASHRC=(
@@ -76,6 +81,7 @@ declare -A TOOL_BASHRC=(
     [bumper]="alias bumper=\"$UBTOOLS_DIR/bumper/bumper.sh\""
     [proxy]="alias px=\"$UBTOOLS_DIR/proxy/px.sh\""
     [mvn]="source \"$UBTOOLS_DIR/mvn/mvn.sh\""
+    [ett]="source \"$UBTOOLS_DIR/ett/ett.sh\""
 )
 
 _is_installed() {
@@ -85,6 +91,7 @@ _is_installed() {
         bumper) grep -qF "bumper/bumper.sh"  "$BASHRC" 2>/dev/null ;;
         proxy)  grep -qF "proxy/px.sh"      "$BASHRC" 2>/dev/null ;;
         mvn)    grep -qF "mvn/mvn.sh"       "$BASHRC" 2>/dev/null ;;
+        ett)    grep -qF "ett/ett.sh"       "$BASHRC" 2>/dev/null ;;
     esac
 }
 
@@ -143,6 +150,9 @@ _install_tool() {
         bumper)
             info "Run 'bumper' from any Maven project root."
             ;;
+        ett)
+            info "Open a new terminal. Turn it on/off with: ett on / ett off (ett alone shows help)"
+            ;;
     esac
 
     info "Done: $tool installed."
@@ -156,7 +166,7 @@ echo ""
 
 while true; do
     local_rows=()
-    for t in ath bumper proxy mvn; do
+    for t in ath bumper proxy mvn ett; do
         _is_installed "$t" && tag="✓" || tag="○"
         local_rows+=("$(printf '%s  %-8s  %s' "$tag" "$t" "${TOOL_DESC[$t]}")")
     done
